@@ -2,9 +2,9 @@
 `default_nettype none
 
 module jupiter_ace (
-    input wire         clk25,
-    input wire         clkps2,
-    input wire         dataps2,
+    input wire         clk_25mhz,
+    input wire         usb_fpga_bd_dp,
+    input wire         usb_fpga_bd_dn,
     input wire         ear,
 
     output wire [3:0]  audio_l,
@@ -16,6 +16,8 @@ module jupiter_ace (
     output wire [7:0]  led,
     input wire [6:0]   btn
   );
+
+  assign led = ps2_key[7:0];
 
   // Set usb to PS/2 mode
   assign usb_fpga_pu_dp = 1;
@@ -47,7 +49,7 @@ module jupiter_ace (
   wire clkcpu; 
 
   clk_25_system pll (
-    .clk_in(clk25),
+    .clk_in(clk_25mhz),
     .pll_125(clkdvi), // 125 Mhz, DDR bit rate
     .pll_75(clkram),  //  75 Mhz, treat bram as async
     .pll_25(clkvga),  //  25 Mhz, VGA pixel rate
@@ -76,8 +78,8 @@ module jupiter_ace (
   // Get PS/2 keyboard events
   ps2 ps2_kbd (
      .clk(clkcpu),
-     .ps2_clk(clkps2),
-     .ps2_data(dataps2),
+     .ps2_clk(usb_fpga_bd_dp),
+     .ps2_data(usb_fpga_bd_dn),
      .ps2_key(ps2_key)
   );
 

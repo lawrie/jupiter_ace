@@ -17,6 +17,7 @@ module jupiter_ace (
     input wire [6:0]   btn
   );
 
+  // Set usb to PS/2 mode
   assign usb_fpga_pu_dp = 1;
   assign usb_fpga_pu_dn = 1;
 
@@ -45,9 +46,7 @@ module jupiter_ace (
   wire clkvga; 
   wire clkcpu; 
 
-  clk_25_system
-  clk_25_system_inst
-  (
+  clk_25_system pll (
     .clk_in(clk25),
     .pll_125(clkdvi), // 125 Mhz, DDR bit rate
     .pll_75(clkram),  //  75 Mhz, treat bram as async
@@ -55,14 +54,17 @@ module jupiter_ace (
     .pll_33(clkcpu)   //  3.25 Mhz, CPU clock
   );
 
+  wire [10:0] ps2_key;
+
+  // The Jupiter Ace core
   fpga_ace the_core (
     .clkram(clkram),
     .clk65(clkvga),
     .clkcpu(clkcpu),
     .reset(kbd_reset & poweron_reset[7] & btn[0]),
     .ear(ear),
-    .rows(kbd_rows),
-    .columns(kbd_columns),
+    .kbd_reset(kbd_reset),
+    .ps2_key(ps2_key),
     .video(video),
     .hsync(vga_hsync),
     .vsync(vga_vsync),
@@ -71,18 +73,15 @@ module jupiter_ace (
     .spk(spk)
   );
 
-  keyboard_for_ace the_keyboard (
-    .clk(clkcpu),
-    .clkps2(clkps2),
-    .dataps2(dataps2),
-    .rows(kbd_rows),
-    .columns(kbd_columns),
-    .kbd_reset(kbd_reset),
-    .kbd_nmi(),
-    .kbd_mreset(),
-    .led(led)
+  // Get PS/2 keyboard events
+  ps2 ps2_kbd (
+     .clk(clkcpu),
+     .ps2_clk(clkps2),
+     .ps2_data(dataps2),
+     .ps2_key(ps2_key)
   );
 
+  // Convert VGA to HDMI
   HDMI_out vga2dvid (
     .pixclk(clkvga),
     .pixclk_x5(clkdvi),

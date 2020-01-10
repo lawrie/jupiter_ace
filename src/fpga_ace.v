@@ -7,8 +7,8 @@ module fpga_ace (
     input  wire clkcpu,
     input  wire reset,
     input  wire ear,
-    output wire [7:0] rows,
-    input  wire [4:0] columns,
+    input  wire [10:0] ps2_key,
+    output wire kbd_reset,
     output wire video,
     output wire hsync,
     output wire vsync,
@@ -22,32 +22,27 @@ module fpga_ace (
    wire [7:0]  DoutZ80;
    wire [15:0] AZ80;
 	
-   // Señales de control, direccion y datos de parte de todas las memorias
+   // Memory control signals
    wire iorq_n, mreq_n, int_n, rd_n, wr_n, wait_n;
    wire rom_enable, sram_enable, cram_enable, uram_enable, xram_enable, eram_enable, data_from_jace_oe;
    wire [7:0] dout_rom, dout_sram, dout_cram, dout_uram, dout_xram, dout_eram, data_from_jace;
    wire [7:0] sram_data, cram_data;
    wire [9:0] sram_addr, cram_addr;
     
-   // Señales para la implementación de la habilitación de escritura en ROM
-   wire enable_write_to_rom;
-   wire [7:0] dout_modulo_enable_write;
-   wire modulo_enable_write_oe;
-
-   // Copia del bus de direcciones para las rows del teclado
+   // Address bus copy for keyboard rows
    assign rows = AZ80[15:8];
 
-   // Multiplexor para asignar un valor al bus de datos de entrada del Z80
-   assign DinZ80 = (rom_enable == 1'b1)?        dout_rom :
-                   (sram_enable == 1'b1)?       dout_sram :
-                   (cram_enable == 1'b1)?       dout_cram :
-                   (uram_enable == 1'b1)?       dout_uram :
-                   (xram_enable == 1'b1)?       dout_xram :
-                   (eram_enable == 1'b1)?       dout_eram :
-                   (data_from_jace_oe == 1'b1)? data_from_jace :
-                                                sram_data | cram_data;  // By default, this is what the data bus sees
+   // Address multiplexer
+   assign DinZ80 = rom_enable        ? dout_rom :
+                   sram_enable       ? dout_sram :
+                   cram_enable       ? dout_cram :
+                   uram_enable       ? dout_uram :
+                   xram_enable       ? dout_xram :
+                   eram_enable       ? dout_eram :
+                   data_from_jace_oe ? data_from_jace :
+                                       sram_data | cram_data;  // By default, this is what the data bus sees
 
-  // Memoria del equipo
+  // Memory
   ram1k_dualport sram (
     .clk(clkram),
     .ce(sram_enable),
@@ -136,7 +131,8 @@ module fpga_ace (
    .nmi_n(1'b1), 
    .busrq_n(1'b1)
   );
-        
+
+  // Ace-specific logic      
   jace_logic logic (
     .clk(clk65),
     // CPU interface
@@ -172,6 +168,20 @@ module fpga_ace (
     .vsync_vga(vsync),
     .blank_vga(blank)
   );
-    
+
+  wire [7:0] rows;
+  wire [4:0] columns;
+
+  // Keyboard matrix
+  keyboard_for_ace the_keyboard (
+    .clk(clkcpu),
+    .ps2_key(ps2_key),
+    .rows(rows),
+    .columns(columns),
+    .kbd_reset(kbd_reset),
+    .kbd_nmi(),
+    .kbd_mreset()
+  );
+  
 endmodule
 

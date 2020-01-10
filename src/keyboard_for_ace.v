@@ -3,8 +3,7 @@
 
 module keyboard_for_ace(
     input wire clk,
-    input wire clkps2,
-    input wire dataps2,
+    input wire [10:0] ps2_key,
     input wire [7:0] rows,
     output wire [4:0] columns,
     output reg kbd_reset,
@@ -31,14 +30,6 @@ module keyboard_for_ace(
     reg ctrl_pressed = 1'b0;
     reg alt_pressed = 1'b0;
     
-
-    ps2 ps2_kbd (
-        .clk(clk),
-        .ps2_clk(clkps2),
-        .ps2_data(dataps2),
-	.ps2_key(ps2_key)
-    );
-
     reg [4:0] matrix[0:7];  // 40-key matrix keyboard
     initial begin
         matrix[0] <= 5'b11111;  // C X Z SS CS

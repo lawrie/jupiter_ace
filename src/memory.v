@@ -1,24 +1,5 @@
 `timescale 1ns / 1ps
 `default_nettype none
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    04:47:33 03/21/2011 
-// Design Name: 
-// Module Name:    memorias 
-// Project Name: 
-// Target Device_ns: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
 
 module rom (
     input wire clk,
@@ -27,7 +8,7 @@ module rom (
     input wire we,
     input wire [7:0] din,
     output reg [7:0] dout
-    );
+);
 
    reg [7:0] mem[0:8191];
    integer i;
@@ -43,13 +24,13 @@ module rom (
 endmodule
 
 module ram1k (
-	input wire clk,
+  input wire clk,
   input wire ce,
-	input wire [9:0] a,
-	input wire [7:0] din,
-	output reg [7:0] dout,
-	input wire we
-	);
+  input wire [9:0] a,
+  input wire [7:0] din,
+  output reg [7:0] dout,
+  input wire we
+);
 
   reg [7:0] mem[0:1023];
   always @(posedge clk) begin
@@ -60,15 +41,15 @@ module ram1k (
 endmodule
 
 module ram1k_dualport(
-	input wire clk,
+  input wire clk,
   input wire ce,
-	input wire [9:0] a1,
+  input wire [9:0] a1,
   input wire [9:0] a2,
-	input wire [7:0] din,
-	output reg [7:0] dout1,
+  input wire [7:0] din,
+  output reg [7:0] dout1,
   output reg [7:0] dout2,
-	input wire we
-	);
+  input wire we
+);
 
   reg [7:0] mem[0:1023];
   always @(posedge clk) begin
@@ -80,13 +61,13 @@ module ram1k_dualport(
 endmodule
 
 module ram16k (
-	input wire clk,
+  input wire clk,
   input wire ce,
-	input wire [13:0] a,
-	input wire [7:0] din,
-	output reg [7:0] dout,
-	input wire we
-	);
+  input wire [13:0] a,
+  input wire [7:0] din,
+  output reg [7:0] dout,
+  input wire we
+);
 
   reg [7:0] mem[0:16383];
   always @(posedge clk) begin
@@ -97,13 +78,13 @@ module ram16k (
 endmodule
 
 module ram32k (
-	input wire clk,
+  input wire clk,
   input wire ce,
-	input wire [14:0] a,
-	input wire [7:0] din,
-	output reg [7:0] dout,
-	input wire we
-	);
+  input wire [14:0] a,
+  input wire [7:0] din,
+  output reg [7:0] dout,
+  input wire we
+);
 
   reg [7:0] mem[0:32767];
   always @(posedge clk) begin

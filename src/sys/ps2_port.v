@@ -1,34 +1,15 @@
 `timescale 1ns / 1ps
 `default_nettype none
 
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    20:16:31 12/26/2014 
-// Design Name: 
-// Module Name:    ps2_port 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
 module ps2_port (
-    input wire clk,  // se recomienda 1 MHz <= clk <= 600 MHz
-    input wire enable_rcv,  // habilitar la maquina de estados de recepcion
+    input wire clk,
+    input wire enable_rcv,
     input wire ps2clk_ext,
     input wire ps2data_ext,
-    output wire kb_interrupt,  // a 1 durante 1 clk para indicar nueva tecla recibida
-    output reg [7:0] scancode, // make o breakcode de la tecla
-    output wire released,  // soltada=1, pulsada=0
-    output wire extended,  // extendida=1, no extendida=0
+    output wire kb_interrupt,
+    output reg [7:0] scancode,
+    output wire released, 
+    output wire extended,
     output [7:0] led
     );
 

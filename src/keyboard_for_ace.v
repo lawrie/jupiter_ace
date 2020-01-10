@@ -1,23 +1,6 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    17:36:45 11/07/2015 
-// Design Name: 
-// Module Name:    keyboard_for_ace 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+`default_nettype none
+
 module keyboard_for_ace(
     input wire clk,
     input wire clkps2,
@@ -36,7 +19,7 @@ module keyboard_for_ace(
         kbd_mreset = 1'b1;
     end
 
-    `include "keyboard_map_us.vh"
+    `include "keyboard_map_uk.vh"
 
     wire new_key_aval;
     wire [7:0] scancode;
@@ -48,14 +31,14 @@ module keyboard_for_ace(
     reg alt_pressed = 1'b0;
 
     ps2_port ps2_kbd (
-        .clk(clk),                    // se recomienda 1 MHz <= clk <= 600 MHz
-        .enable_rcv(1'b1),            // habilitar la maquina de estados de recepcion
+        .clk(clk),
+        .enable_rcv(1'b1),
         .ps2clk_ext(clkps2),
         .ps2data_ext(dataps2),
-        .kb_interrupt(new_key_aval),  // a 1 durante 1 clk para indicar nueva tecla recibida
-        .scancode(scancode),          // make o breakcode de la tecla
-        .released(is_released),       // soltada=1, pulsada=0
-        .extended(is_extended),       // extendida=1, no extendida=0
+        .kb_interrupt(new_key_aval),
+        .scancode(scancode),
+        .released(is_released),
+        .extended(is_extended),
 	.led(led)
     );
 
@@ -175,7 +158,7 @@ module keyboard_for_ace(
                             matrix[3][2] <= is_released;
                         else begin
                             matrix[0][1] <= is_released;
-                            matrix[3][2] <= is_released;  // #
+                            matrix[0][3] <= is_released;  // £
                         end
                     end
                 `KEY_4:
@@ -498,7 +481,7 @@ module keyboard_for_ace(
                     begin
                         matrix[0][1] <= is_released;
                         if (!shift_pressed)
-                            matrix[0][3] <= is_released;  // £
+                            matrix[3][2] <= is_released;  // £
                         else
                             matrix[1][0] <= is_released;  // ~
                     end       

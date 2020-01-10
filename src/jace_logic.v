@@ -1,24 +1,6 @@
 `timescale 1ns / 1ps
 `default_nettype none
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    00:32:05 11/08/2015 
-// Design Name: 
-// Module Name:    jace_logic 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+
 module jace_logic (
     input wire clk,
     // CPU interface
@@ -119,7 +101,7 @@ module jace_logic (
     // Pixel inverter reg and video output stage
     reg pixinverter = 1'b0;
     always @(posedge clk) begin
-        if (cnt[2:0] == 3'b000)
+        if (cnt[2:0] == 4'b0000)
             pixinverter <= viden & screen_data[7];
     end
     
@@ -173,6 +155,7 @@ module jace_logic (
             data_to_cpu_oe = 1'b1;
         end
     end    
+    
     always @(posedge clk) begin
         if (iorq_n == 1'b0 && cpu_addr[0] == 1'b0) begin
             if (rd_n == 1'b0 && wr_n == 1'b1)

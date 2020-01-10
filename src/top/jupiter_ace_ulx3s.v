@@ -1,37 +1,20 @@
 `timescale 1ns / 1ps
 `default_nettype none
-//////////////////////////////////////////////////////////////////////////////////
-// Company:
-// Engineer:
-//
-// Create Date:    17:18:12 11/07/2015
-// Design Name:
-// Module Name:    jupiter_ace
-// Project Name:
-// Target Devices:
-// Tool versions:
-// Description:
-//
-// Dependencies:
-//
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-//
-//////////////////////////////////////////////////////////////////////////////////
+
 module jupiter_ace (
     input wire         clk25,
     input wire         clkps2,
     input wire         dataps2,
     input wire         ear,
-    output wire        audio_out_left,
-    output wire        audio_out_right,
+
+    output wire [3:0]  audio_l,
+    output wire [3:0]  audio_r,
 
     output wire [3:0]  gpdi_dp, gpdi_dn,
-    output             usb_fpga_pu_dp,
-    output             usb_fpga_pu_dn,
-    output [7:0]       led,
-    input [6:0]        btn
+    output wire        usb_fpga_pu_dp,
+    output wire        usb_fpga_pu_dn,
+    output wire [7:0]  led,
+    input wire [6:0]   btn
   );
 
   assign usb_fpga_pu_dp = 1;
@@ -45,8 +28,8 @@ module jupiter_ace (
 
   // Trivial conversion for audio
   wire mic,spk;
-  assign audio_out_left  = spk;
-  assign audio_out_right = mic;
+  assign audio_l = {4{spk}};
+  assign audio_r = {4{mic}};
   
   // Video timing
   wire vga_hsync, vga_vsync, vga_blank;
@@ -78,8 +61,8 @@ module jupiter_ace (
     .clkcpu(clkcpu),
     .reset(kbd_reset & poweron_reset[7] & btn[0]),
     .ear(ear),
-    .filas(kbd_rows),
-    .columnas(kbd_columns),
+    .rows(kbd_rows),
+    .columns(kbd_columns),
     .video(video),
     .hsync(vga_hsync),
     .vsync(vga_vsync),
@@ -89,7 +72,7 @@ module jupiter_ace (
   );
 
   keyboard_for_ace the_keyboard (
-    .clk(clkvga),
+    .clk(clkcpu),
     .clkps2(clkps2),
     .dataps2(dataps2),
     .rows(kbd_rows),

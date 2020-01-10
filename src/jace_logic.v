@@ -101,7 +101,7 @@ module jace_logic (
     // Pixel inverter reg and video output stage
     reg pixinverter = 1'b0;
     always @(posedge clk) begin
-        if (cnt[2:0] == 4'b0000)
+        if (cnt[3:0] == 4'b0000)
             pixinverter <= viden & screen_data[7];
     end
     

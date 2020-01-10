@@ -21,25 +21,22 @@ module keyboard_for_ace(
 
     `include "keyboard_map_uk.vh"
 
-    wire new_key_aval;
-    wire [7:0] scancode;
-    wire is_released;
-    wire is_extended;
+    wire [10:0] ps2_key;
+    wire new_key_aval = ps2_key[10];
+    wire [7:0] scancode = ps2_key[7:0];
+    wire is_released = ps2_key[9];
+    wire is_extended = ps2_key[8];
 
     reg shift_pressed = 1'b0;
     reg ctrl_pressed = 1'b0;
     reg alt_pressed = 1'b0;
+    
 
-    ps2_port ps2_kbd (
+    ps2 ps2_kbd (
         .clk(clk),
-        .enable_rcv(1'b1),
-        .ps2clk_ext(clkps2),
-        .ps2data_ext(dataps2),
-        .kb_interrupt(new_key_aval),
-        .scancode(scancode),
-        .released(is_released),
-        .extended(is_extended),
-	.led(led)
+        .ps2_clk(clkps2),
+        .ps2_data(dataps2),
+	.ps2_key(ps2_key)
     );
 
     reg [4:0] matrix[0:7];  // 40-key matrix keyboard

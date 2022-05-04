@@ -133,7 +133,7 @@ module fpga_ace (
   );
 
   // Ace-specific logic      
-  jace_logic logic (
+  jace_logic jlogic (
     .clk(clk65),
     // CPU interface
     .cpu_addr(AZ80),

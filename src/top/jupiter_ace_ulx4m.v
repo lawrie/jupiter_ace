@@ -2,7 +2,7 @@
 `default_nettype none
 
 module jupiter_ace #(
-    parameter c_usb          = 0,  // Use USB connector to PS/2
+    parameter c_usb          = 1,  // Use USB connector to PS/2
   ) (
     input wire         clk_25mhz,
     input wire         usb_fpga_bd_dp,
@@ -13,12 +13,10 @@ module jupiter_ace #(
     output wire        usb_fpga_pu_dn,    
     output wire [3:0]  led,
     input wire [2:1]   btn,
-    input wire [27:0]  gpio
+    inout wire [27:0]  gpio
   );
 
   wire ear;
-
-  wire [3:0] audio_l, audio_r;
 
   assign led = ps2_key[3:0];
 
@@ -34,8 +32,8 @@ module jupiter_ace #(
 
   // Trivial conversion for audio
   wire mic,spk;
-  assign audio_l = {4{spk}};
-  assign audio_r = {4{mic}};
+  assign gpio[18] = spk;
+  assign gpio[19] = mic;
   
   // Video timing
   wire vga_hsync, vga_vsync, vga_blank;
